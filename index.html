@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canna Sapiens</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <main>
+        <section class="featured-work">
+            <h1 class="logo" data-text="CANNA SAPIENS">CANNA SAPIENS</h1>
+            
+            <div class="announcements">
+                <h2>ANNOUNCEMENTS</h2>
+                <p>* This is a community project, not affiliated with the team.</p>
+            </div>
+
+            <div class="projects-container">
+                <div class="projects-wrapper">
+                    <!-- Projeler buraya gelecek -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal -->
+    <div class="modal" id="projectModal">
+        <div class="modal-content">
+            <div class="modal-content-inner">
+                <div class="modal-image-container">
+                    <div class="modal-image">
+                        <img id="modalImage" src="" alt="Project Image">
+                    </div>
+                    <div class="modal-image" id="secondaryImage">
+                        <!-- İkinci resim JavaScript ile eklenecek -->
+                    </div>
+                </div>
+                <div id="modalDescription"></div>
+                <div class="modal-tags" id="modalTags">
+                    <!-- Tags will be added with JavaScript -->
+                </div>
+            </div>
+            <div class="modal-date-box">
+                <span class="date-label">RELEASE DATE</span>
+                <span class="date-value" id="modalDate"></span>
+            </div>
+            <span class="close-modal">&times;</span>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.querySelector('.projects-container');
+            const wrapper = document.querySelector('.projects-wrapper');
+            const modal = document.getElementById('projectModal');
+            const closeBtn = document.querySelector('.close-modal');
+            let isDown = false;
+            let startX;
+            let scrollLeft;
+            let isDragging = false;
+            let dragStartTime;
+            
+            const SENSITIVITY = {
+                WHEEL: 200,
+                DRAG: 2.5
+            };
+
+            // Logo renk animasyonu
+            function animateLogo() {
+                const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96e6a1', '#ffd93d'];
+                let currentIndex = 0;
+                
+                setInterval(() => {
+                    const logo = document.querySelector('.logo');
+                    logo.style.color = colors[currentIndex];
+                    currentIndex = (currentIndex + 1) % colors.length;
+                }, 2000);
+            }
+
+            // Community yazısı animasyonu
+            function setupCommunityText() {
+                const communityText = document.querySelector('.announcements p');
+                const words = communityText.textContent.split(' ');
+                const html = words.map((word, wordIndex) => {
+                    const chars = word.split('');
+                    return chars.map((char, i) => 
+                        `<span style="--char-index: ${i + (wordIndex * 10)}">${char}</span>`
+                    ).join('') + (wordIndex < words.length - 1 ? '<span style="--char-index: ${(wordIndex + 1) * 10 - 1}">&nbsp;</span>' : '');
+                }).join('');
+                communityText.innerHTML = html;
+                communityText.classList.add('animated-text');
+            }
+
+            animateLogo();
+            setupCommunityText();
+
+            // Define project data
+            const projectsData = [
+                {
+                    id: 1,
+                    title: "CANNA SAPIENS GENESIS",
+                    image: "images/1.png",
+                    date: "JAN 07, 2024",
+                    description: `
+                        <div class="modal-content-inner">
+                            <div class="modal-text">
+                                <h3>We Started</h3>
+                            </div>
+                        </div>
+                    `,
+                    tags: ["🌿", "🎨"]
+                },
+                {
+                    id: 2,
+                    title: "Canna Sapiens x The Plague",
+                    image: "images/2.png",
+                    date: "MAR 07, 2024",
+                    description: `
+                        <div class="modal-content-inner">
+                            <div class="modal-text">
+                                <h3>Canna Sapiens x The Plague Partnership 🥦 🐸</h3>
+                                <div class="partnership-details">
+                                    <div class="detail-item">
+                                        <h4>10% Of Our Mint Proceeds</h4>
+                                        <p>Will be dedicated to creative content production for The Plague.</p>
+                                    </div>
+                                    
+                                    <div class="detail-item">
+                                        <h4>First Major Web3 Client</h4>
+                                        <p>The Plague isn't just partnering with us; they're becoming the first major Web3 client to benefit from the creative infrastructure we're passionately building.</p>
+                                    </div>
+                                    
+                                    <div class="detail-item">
+                                        <h4>Just the Beginning</h4>
+                                        <p>As we embark on this exciting journey with The Plague, we're also just reiterating that… Next week, we're revealing our key Web2 partner… the force through which we'll be realising our creative ambitions.</p>
+                                    </div>
+                                    
+                                    <div class="social-link">
+                                        <a href="https://twitter.com/CannaSapiensNFT/status/1763625941085859968" target="_blank">View on X (Twitter) 🔗</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `,
+                    tags: ["🥦", "🐸"]
+                },
+                {
+                    id: 3,
+                    title: "KEY WEB2 PARTNER: EALLIN CREATIVE",
+                    image: "images/3.png",
+                    date: "MAR 07, 2024",
+                    description: `
+                        <div class="modal-content-inner">
+                            <div class="modal-text">
+                                <h3>Partnership Announcement</h3>
+                                <p>We're thrilled to announce that Canna Sapiens is partnering with Eallin Creative, an award winning mixed-media production house with a legacy spanning over two decades.</p>
+                                <p>One of our own founders, Filip Finkelstejn, serves as an Executive Producer and Managing Director at Eallin Prague.</p>
+                                <p><a href="http://www.eallin.com" target="_blank" class="modal-link">www.eallin.com</a></p>
+                                
+                                <h4>What This Means For Our Project:</h4>
+                                <ul>
+                                    <li><strong>Global creative input:</strong> With Eallin's worldwide network of artists, get ready for a multitude of artistic styles in our content and brand image as we continue to build.</li>
+                                    <li><strong>Infrastructure benefits:</strong> We gain direct access to top-tier production capabilities, ensuring excellent outputs for our future visual endeavours.</li>
+                                    <li><strong>Expanding our reach:</strong> This partnership opens doors to Eallin's extensive client base, promising exciting opportunities for future collaborations.</li>
+                                    <li><strong>CFS co-development:</strong> [REDACTED]</li>
+                                </ul>
+                                
+                                <p class="modal-objective">Objective? An innovative crowd-sourced creativity platform that not only stands on its own, but also lays the foundation for a cannabis brand like no other.</p>
+                            </div>
+                        </div>
+                    `,
+                    tags: []
+                },
+                {
+                    id: 4,
+                    title: "Q2 2024: The Becoming",
+                    image: "images/4.png",
+                    date: "APR 11, 2024",
+                    description: `
+                        <div class="modal-content-inner">
+                            <div class="modal-text">
+                                <h3>Q2 2024: The Becoming</h3>
+                                <div class="roadmap-items">
+                                    <div class="roadmap-item">
+                                        <h4>🥦 PFP Showcase</h4>
+                                        <p>We can safely say... we have the funkiest, craziest PFPs on our hands, roaring to be unleashed. 420?</p>
+                                    </div>
+                                    
+                                    <div class="roadmap-item">
+                                        <h4>🥦 Website launch</h4>
+                                        <p>There will be a two-part release... sneak peaks coming soon.</p>
+                                    </div>
+                                    
+                                    <div class="roadmap-item">
+                                        <h4>🥦 Whitepaper</h4>
+                                        <p>There's a plan to all this?</p>
+                                    </div>
+                                    
+                                    <div class="roadmap-item">
+                                        <h4>🥦 3D... REDACTED concept reveal</h4>
+                                        <p>Let's just say that you'll be meeting someone new.</p>
+                                    </div>
+                                    
+                                    <div class="roadmap-item">
+                                        <h4>🥦 MINT</h4>
+                                        <p>wen? 👀</p>
+                                    </div>
+                                    
+                                    <div class="social-link">
+                                        <a href="https://twitter.com/CannaSapiensNFT/status/1778497572417495488" target="_blank">View on X (Twitter) 🔗</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `,
+                    tags: ["🥦", "🗺️"]
+                },
+                {
+                    id: 5,
+                    title: "PFP Style Vote",
+                    image: "images/5.png",
+                    date: "APR 29, 2024",
+                    description: `
+                        <div class="modal-content-inner">
+                            <div class="modal-text">
+                                <h3>Cartoon vs Realistic style PFPs - The Choice Is Yours</h3>
+                                <div class="vote-content">
+                                    <div class="vote-message">
+                                        <p>We heard you Hempinos... ✊</p>
+                                        <p>It's now up to the community to decide which style our PFPs will adopt. :cool~2:</p>
+                                        <p>You will have three days to vote for your favorite style in the poll below. 👇</p>
+                                    </div>
+                                    
+                                    <div class="vote-result">
+                                        <img src="images/55.png" alt="Vote Results" class="result-image">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `,
+                    tags: ["🗳️", "🎨"]
+                },
+                {
+                    id: 6,
+                    title: "Website Launch Announcement",
+                    image: "images/6.png",
+                    date: "MAY 17, 2024",
+                    description: `
+                        <div class="modal-content-inner">
+                            <div class="modal-text">
+                                <h3>Website launch next week Hempinos!</h3>
+                                <div class="announcement-content">
+                                    <div class="announcement-message">
+                                        <p>We will be releasing it in two phases. More info on this in a little bit.</p>
+                                        <p>As usual, @OG Bud will be the ones to have a first look at the site before it goes out to the public.</p>
+                                        <p>Super excited to share it with everyone. :cool~2:</p>
+                                        <p>Have a great weekend. 💚</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `,
+                    tags: ["🌐", "🚀"]
+                },
+                {
+                    id: 7,
+                    title: "Website Launch V1",
+                    image: "images/7.png",
+                    date: "MAY 23, 2024",
+                    description: `
+                        <div class="modal-content-inner">
+                            <div class="modal-text">
+                                <h3>Our Website is Now Live! 🚀</h3>
+                                <div class="website-launch">
+                                    <div class="website-url">
+                                        <a href="http://www.cannasapiens.io" target="_blank">www.cannasapiens.io</a>
+                                    </div>
+                                    
+                                    <div class="launch-message">
+                                        <p>We're stoked to announce that V1 of our website is online.</p>
+                                        <p>This initial phase is all about the vibes. :smugg:</p>
+                                    </div>
+
+                                    <div class="upcoming-features">
+                                        <h4>Scheduled for release in the next few weeks, the complete V2 will include:</h4>
+                                        <ul>
+                                            <li>Mint Front-Window</li>
+                                            <li>About Section</li>
+                                            <li>Team Section</li>
+                                            <li>FAQ Section</li>
+                                            <li>Wallet Checker</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="launch-footer">
+                                        <p>Keep the feedback coming as we evolve and expand our site!</p>
+                                        <p>Let's go Hempinos. ✊</p>
+                                        <p>💚</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `,
+                    tags: ["🌐", "🚀"]
+                },
+                {
+                    id: 8,
+                    title: "First Store Acquisition",
+                    image: "images/8.png",
+                    date: "JUN 17, 2024",
+                    description: `
+                        <div class="modal-content-inner">
+                            <div class="modal-text">
+                                <h3>Canna Sapiens Acquires Majority Stake in its First Cannabis Store! 🥦</h3>
+                                <div class="store-announcement">
+                                    <div class="announcement-section">
+                                        <p class="highlight">Hempinos! Two weeks ago, the founders came across an opportunity they had to act upon, and we're thrilled to announce that Canna Sapiens has found the home for its soon-to-be first physical store.</p>
+                                    </div>
+
+                                    <div class="announcement-section">
+                                        <p>It may not look like much just yet, and the previous owners may have… "borrowed" the branding of a certain well-established brand... 🍪🤦‍♂️ But that's why we're here.</p>
+                                    </div>
+
+                                    <div class="announcement-section">
+                                        <p>The rebranding process to Canna Sapiens will already be starting pre-mint, so get hyped for some exciting updates regarding that soon.</p>
+                                    </div>
+
+                                    <div class="announcement-section important">
+                                        <p>One of the essential aims of Canna Sapiens has always been to create a stable ecosystem that incorporates reliable Web2 revenue streams. This acquisition is a significant milestone in making that happen, and in due time, it will demonstrate how our "different 👀 " approach to marketing will result in increased sales, and act as a proof of concept for future franchising potential.</p>
+                                    </div>
+
+                                    <div class="announcement-section">
+                                        <p class="teaser">What does this mean for our future holders? We'll begin to share this week. 😎</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `,
+                    tags: ["🏪", "🥦"]
+                },
+                {
+                    id: 9,
+                    title: "RWA Utility Vision",
+                    image: "images/9.png",
+                    date: "JUN 25, 2024",
+                    description: `
+                        <div class="modal-content-inner">
+                            <div class="modal-text">
+                                <h3>RWA Utility Vision - Cannabis Venture 🥦</h3>
+                                <div class="vision-content">
+                                    <div class="vision-section long-term">
+                                        <h4>Long-term:</h4>
+                                        <div class="vision-item">
+                                            <h5>Revenue Sharing & Transparent Investment Opportunities 💰</h5>
+                                            <p>We plan to share financial benefits with our holders and offer clear investment opportunities during new Canna Sapiens shop openings and product line developments. Achieving this will require time and patience from our community.</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="vision-section near-future">
+                                        <h4>In the Nearer Future:</h4>
+                                        <div class="vision-item">
+                                            <h5>NFT IP Licensing Agreements 📜</h5>
+                                            <p>We will be licensing Canna Sapiens PFPs for use in our product designs, IRL marketing, and content.</p>
+                                        </div>
+
+                                        <div class="vision-item">
+                                            <h5>Special Benefits for CS Token Holders 💲</h5>
+                                            <p>(TBA) 👀</p>
+                                        </div>
+
+                                        <div class="vision-item">
+                                            <h5>Tokenized Digital & Storytelling Experiences 📱</h5>
+                                            <p>We will bring CS-branded products to life through digital and storytelling experiences.</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="vision-footer">
+                                        <p>All to inspire our holders and future customers to become active creators within our ecosystem, to bring utility to those who seek it.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `,
+                    tags: ["💡", "🥦"]
+                },
+                {
+                    id: 10,
+                    title: "July Project Update",
+                    image: "images/10.png",
+                    date: "JUL 5, 2024",
+                    description: `
+                        <div class="modal-content-inner">
+                            <div class="modal-text">
+                                <h3>Project Update :eyes~1:</h3>
+                                <div class="project-update">
+                                    <div class="update-intro">
+                                        <p>The past six months have been an incredible journey with you all. Thank you, Hempinos. 💚</p>
+                                        <p>As we enter July, we want to address some frequently asked questions and share important updates.</p>
+                                    </div>
+
+                                    <div class="update-section mint-info">
+                                        <h4>Wen Mint?</h4>
+                                        <p>If everything goes as planned, we aim to launch in early to mid-August. There are two main reasons for the delay.</p>
+                                        
+                                        <div class="delay-reason">
+                                            <h5>Pre-mint Purchase of Our First Cannabis Store:</h5>
+                                            <p>The founders had to act swiftly and decisively on a unique opportunity. We went from potential interest to acquisition in less than three weeks. To make this happen, we had to momentarily shift our focus away from mint preparations. It was a conscious decision because we felt it was the best way to demonstrate to the community that we're serious and mean business. 💪</p>
+                                        </div>
+
+                                        <div class="delay-reason">
+                                            <h5>Partnership Negotiations:</h5>
+                                            <p>We're in talks with some amazing Solana projects and want to bring 1-2 more significant communities on board. This takes time, as we want to grow the Canna Sapiens family in the right, honest, and organic way.</p>
+                                        </div>
+
+                                        <p class="appreciation">We appreciate your patience and support! :pepe_heart:</p>
+                                    </div>
+
+                                    <div class="update-section whitelist">
+                                        <h4>Whitelist Breakdown</h4>
+                                        <p>As we've grown, the demand for whitelist spots has skyrocketed. We've collaborated with many well-established communities, and we're grateful to those who have joined Canna Sapiens.</p>
+
+                                        <div class="wl-type">
+                                            <h5>@OG Bud:</h5>
+                                            <p>This role is reserved for those who have demonstrated special and creative dedication. OGs are guaranteed to mint and can mint multiple discounted NFTs.</p>
+                                        </div>
+
+                                        <div class="wl-type">
+                                            <h5>@Whiteling:</h5>
+                                            <p>This includes everyone who won WL through collaborations, events, or support. This role is not yet guaranteed, but in a few weeks, everyone will have the chance to solidify their guaranteed spot through a simple task/event on our V2 website.</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="update-section future-plans">
+                                        <p>We will provide more details later this month, including our minting process, discount structure, and all the other essential info.</p>
+                                        <p>We're incredibly excited about what's to come. Thank you to everyone who continues to support us on Discord and X. Remember, this is a community project, and your ideas, opinions, and feedback are, as always, essential to us.</p>
+                                        <p class="closing">Stay tuned, Hempinos; a lot is on its way! 🥦</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `,
+                    tags: ["📢", "🥦"]
+                },
+                {
+                    id: 11,
+                    title: "$CANNA Token Launch",
+                    image: "images/11.png",
+                    date: "AUG 14, 2024",
+                    description: `
+                        <div class="modal-content-inner">
+                            <div class="modal-text">
+                                <h3>Behold $CANNA Coin!</h3>
+                                <div class="token-announcement">
+                                    <div class="token-intro">
+                                        <p>If the recent animations didn't scream NATIVE TOKEN, this one certainly does. Let's dive into the crucial role $CANNA will play in the Canna Sapiens ecosystem.</p>
+                                    </div>
+
+                                    <div class="token-section brand">
+                                        <h4>Elevate Your Personal Brand</h4>
+                                        <p>In Web3, your personal brand matters—and as a Canna Sapien, it better be dripping with style. Our goal is to build one of the coolest-looking communities out there, and it's our responsibility to provide a platform that makes it fun and effortless for you to achieve that with us.</p>
+                                        
+                                        <p>We're here to support your growth with content creation services, all accessible with CS tokens. Use your tokens to:</p>
+                                        
+                                        <ul class="token-features">
+                                            <li>Create personalised animations using our easy-to-use templates</li>
+                                            <li>Animate your PFPs into dynamic, eye-catching loops</li>
+                                            <li>Customize your PFPs with exclusive traits (off-chain)</li>
+                                            <li>Design custom banners that make your profile pop</li>
+                                        </ul>
+
+                                        <p>This initiative not only helps you grow but also strengthens our collective brand. By sharing your story, we're expanding our reach and solidifying the Canna Sapiens community.</p>
+                                        
+                                        <p class="highlight">We want the timeline to scream Canna Sapiens.</p>
+                                    </div>
+
+                                    <div class="token-section purchases">
+                                        <h4>Online and In-store Purchases</h4>
+                                        <p>Post-mint, CS token holders can use their tokens as a form of payment in our physical stores and online shops. We'll be offering special incentives, such as discounts and exclusive access to limited products, for those who pay with CS tokens. More details will follow after the mint.</p>
+                                    </div>
+
+                                    <div class="token-footer">
+                                        <p>We're excited about the future and the opportunities our CS token will unlock. These use cases are just the beginning.</p>
+                                        <p class="closing">Get ready to maximize your tokens and join us on this journey.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `,
+                    tags: ["💰", "🥦"]
+                },
+                {
+                    id: 12,
+                    title: "Mint & Project Update",
+                    image: "images/12.png",
+                    date: "AUG 27, 2024",
+                    description: `
+                        <div class="modal-content-inner">
+                            <div class="modal-text">
+                                <h3>MINT & PROJECT UPDATE</h3>
+                                <div class="project-status">
+                                    <div class="status-intro">
+                                        <h4>Wen mint announcement? Weren't we going to mint in August?</h4>
+                                        <p>We absolutely understand your frustration, Hempinos. 🙏 Trust us when we say that it was shared with the team.</p>
+                                    </div>
+
+                                    <div class="status-section explanation">
+                                        <h4>So what happened?</h4>
+                                        <p>Due to the state of the market, we were forced to constantly re-evaluate our supply and mint price. This, in turn, had a knock-on effect on our pre and post-mint plans.</p>
+                                        <p>We didn't want to make any promises we couldn't keep, so we took a step back to figure out the best way forward. This should have been conveyed to you much sooner, thats on us. We know how absolutely essential clear communication with the community is, and such a lapse will not be happening again. 🫡</p>
+                                        <p class="positive">That being said, we now do see the delay as a blessing in disguise, because it has given us time to refine our plan, and launch into a market better suited for what we are building! :cool~2:</p>
+                                    </div>
+
+                                    <div class="status-section mint-date">
+                                        <h4>So Wen Mint?!</h4>
+                                        <p>We can now confirm that the mint will finally be happening between the last week of September and the first week of October. We will be announcing the final mint date next week, with the supply and mint price to follow the week after.</p>
+                                    </div>
+
+                                    <div class="status-section plan-update">
+                                        <h4>Plan Update:</h4>
+                                        <div class="update-content">
+                                            <p>One of the biggest positives has been our first cannabis store acquisition. So far, we've only made small changes to the overall business management, but they're already yielding solid results, with strong sales over the last two months. Once we dig our teeth into the marketing and brand identity post-mint, things will step up to another level.</p>
+                                            
+                                            <p>People are starting to wake up to the potential of the cannabis market in the Czech Republic, and we're seeing some competition spring up. Hence, we have to capitalize on the market opportunity ASAP.</p>
+                                            
+                                            <div class="target-box">
+                                                <p>Our target is now to open two more store locations in Prague by the end of Q1 2025. With our little armada of three shops, we'll be laying a steady financial foundation for Canna Sapiens, allowing us to start giving back to the holders in a way that makes a difference, while being able to sustainably grow the project.</p>
+                                            </div>
+                                            
+                                            <p>CFS will continue to be developed, but its more expensive components will take a backseat until the above is realized.</p>
+                                            
+                                            <p class="summary">In summary, the immediate focus of the investment from the mint will be on the cannabis venture, ensuring we secure long-term income for all Canna Sapiens in the fastest yet safest way moving forward.</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="status-footer">
+                                        <p>To wrap it up, it's our last 4-5 weeks pre-mint! This time for real. We'll be switching things up a little for the final push, let's have a great fucking time.</p>
+                                        <p class="closing">Once again, thank you for your patience, Hempinos—full throttle from here on out. :angry~2:</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `,
+                    tags: ["📢", "🚀"]
+                },
+                {
+                    id: 13,
+                    title: "Mint Date Announcement",
+                    image: "images/13.png",
+                    date: "SEP 5, 2024",
+                    description: `
+                        <div class="modal-content-inner">
+                            <div class="modal-text">
+                                <h3>MINT DATE ANNOUNCEMENT: OCTOBER 3RD 🚨</h3>
+                                <div class="mint-announcement">
+                                    <div class="mint-intro">
+                                        <p>"Wen mint?" has been the non-stop anthem of our Discord. It's been a long time coming, but the wait is finally over.</p>
+                                    </div>
+
+                                    <div class="mint-date-reveal">
+                                        <p class="highlight">We're thrilled to announce that mint day is set for October 3rd!</p>
+                                    </div>
+
+                                    <div class="mint-info">
+                                        <p>The mint structure 99% locked in, and we'll be revealing the supply and mint price very, very soon. :cool~2:</p>
+                                        <p class="emphasis">The team is cooking, strap the f*** in Hempinos. 🔥</p>
+                                        <p>Stay tuned, spread the word like wildfire, LFG. :angry~2:</p>
+                                    </div>
+
+                                    <div class="social-link">
+                                        <p>X link: <a href="https://twitter.com/CannaSapiensNFT/status/1831754193503449216" target="_blank">https://twitter.com/CannaSapiensNFT/status/1831754193503449216</a></p>
+                                        <p class="love">(show some love 💚 )</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `,
+                    tags: ["📢", "🚀"]
+                },
+                {
+                    id: 14,
+                    title: "Important Mint Update",
+                    image: "images/14.png",
+                    date: "SEP 14, 2024",
+                    description: `
+                        <div class="modal-content-inner">
+                            <div class="modal-text">
+                                <div class="important-announcement">
+                                    <div class="announcement-header">
+                                        <h3>🚨 Must Read Announcement: 🚨</h3>
+                                        <h4>Mint is Postponed: We're Going Bigger, Better, and Bolder.</h4>
+                                    </div>
+
+                                    <div class="announcement-body">
+                                        <div class="greeting">
+                                            <p>Hempinos,</p>
+                                        </div>
+
+                                        <div class="opportunity-section">
+                                            <p class="question">What would you do if you were presented with a once-in-a-lifetime opportunity? An opportunity to collaborate with one of the biggest names in Web3. Someone who has redefined the NFT space. A name that brings a community like no other. A chance to elevate Canna Sapiens to new heights...</p>
+                                            <p class="statement">This is where we stand.</p>
+                                        </div>
+
+                                        <div class="decision-section">
+                                            <p>The decision was put forward to the whole team, and it was unanimous.</p>
+                                            <div class="emphasis-box">
+                                                <p>We're not settling. We're going bigger. We're going better.</p>
+                                                <p>This move is about the future we're building together.</p>
+                                                <p>This is for all of us. For this community.</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="impact-section">
+                                            <p class="impact">Now of course, there's a catch: We have to postpone the mint and along with that, the wallet collection.</p>
+                                            <p class="mystery">Why? All will be clear soon.</p>
+                                            <p>There aren't many things that can make up for a mint delay, but what's coming will do far more than that.</p>
+                                        </div>
+
+                                        <div class="closing-section">
+                                            <p>Buckle up. We're about to embark on a journey to reach another level. Yes, the mint is postponed, but the future? It has never been brighter.</p>
+                                            <p class="next-steps">Next week, we'll begin shedding light on what we've been working on—and trust us, it's worth the wait, so sit back, and let us bake.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `,
+                    tags: ["🚨", "📢"]
+                },
+                {
+                    id: 15,
+                    title: "Abstract Partnership",
+                    image: "images/15.png",
+                    date: "OCT 7, 2024",
+                    description: `
+                        <div class="modal-content-inner">
+                            <div class="modal-text">
+                                <div class="abstract-announcement">
+                                    <div class="announcement-header">
+                                        <h3>✳️ Canna Sapiens will officially be minting on Abstract! ✳️</h3>
+                                        <p class="intro">Hempinos, we've been on quite a journey together, and today, we're excited to announce a huge turning point in our story. :gains:</p>
+                                    </div>
+
+                                    <div class="partnership-intro">
+                                        <p>After locking in our Solana mint, fate intervened, and we had the chance to jump on a call with none other than Luca Netz—the CEO of Pudgy Penguins. For those of you somehow unfamiliar, Luca is the driving force behind the Pudgies' meteoric rise as the leader in IP, real-world assets (RWA), and mass Web2 adoption within Web3.</p>
+                                        <p>Following a great chat, he extended an incredible opportunity: to launch Canna Sapiens on Abstract. After learning more about Abstract and discussing it with our partners, we realized it's the perfect home for us. With that, we made the decision to postpone the mint to accommodate this monumental pivot.</p>
+                                    </div>
+
+                                    <div class="abstract-benefits">
+                                        <h4>Why is Abstract perfect?</h4>
+                                        <p class="intro-text">We initially chose Solana for its speed and low-cost transactions—but Abstract offers this and so much more.</p>
+                                        <p class="main-benefit">Abstract will allow us to unite our Cannabis Venture, Creative Flow State (CFS), and NFT/IP licensing all in one place. Everything Canna Sapiens will eventually be available through a simple, user-friendly app, with no worries about blockchain complexities or plugins. This won't just make your Canna Sapiens experience amazing—it will also make it effortless for new members to join our family. Whether someone discovers us online or walks into a Canna Sapiens shop, they'll be able to enter our world in no time. With Abstract, we'll finally make onboarding as easy and welcoming as we've always dreamed it could be.</p>
+                                        
+                                        <div class="features-list">
+                                            <div class="feature">
+                                                <h5>Account abstraction for ease of use:</h5>
+                                                <p>Abstract's account abstraction eliminates the need for seed phrases or complex wallets. Users can seamlessly interact with our ecosystem using just a simple, secure login—making the transition from Web2 to Web3 effortless.</p>
+                                            </div>
+
+                                            <div class="feature">
+                                                <h5>NFT Licensing via Abstract:</h5>
+                                                <p>Abstract's smart contracts offer dynamic, transparent NFT licensing, automating royalty distributions and ensuring flexibility. This makes managing and acquiring licenses straightforward for both creators and businesses.</p>
+                                            </div>
+
+                                            <div class="feature">
+                                                <h5>Gasless and scalable transactions:</h5>
+                                                <p>Low gas fees, no delays—Abstract's infrastructure ensures that every transaction, whether in-store or online, is fast and efficient.</p>
+                                            </div>
+
+                                            <div class="feature">
+                                                <h5>Native Paymaster Support:</h5>
+                                                <p>With Abstract, Canna Sapiens can subsidize transaction fees or offer flexible fee structures, making interactions within the ecosystem smooth and cost-effective for users engaging with the CS token.</p>
+                                            </div>
+
+                                            <div class="feature">
+                                                <h5>Consumer-first design:</h5>
+                                                <p>Abstract is built with users in mind, offering a Web3 experience that's simple and intuitive. Whether shopping in-store or exploring the online ecosystem, it'll be as easy as a few clicks.</p>
+                                            </div>
+
+                                            <div class="feature">
+                                                <h5>Built for growth:</h5>
+                                                <p>Abstract's scalable infrastructure will support us as we grow—whether handling micro-transactions tied to in-store purchases or enabling rewards for customers engaging with our NFTs and IP.</p>
+                                            </div>
+
+                                            <div class="feature">
+                                                <h5>Culture and Community Focus:</h5>
+                                                <p>Abstract's emphasis on culture and creativity resonates with Canna Sapiens' values, supporting our mission to build a vibrant community both in our stores and online.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mint-info">
+                                        <h4>Wen Mint?</h4>
+                                        <p>While Abstract is still in its testnet phase, Luca and his team plan to have it live before the end of the year. When it's ready, we'll be ready—locked and loaded for mint day!</p>
+                                    </div>
+
+                                    <div class="closing-message">
+                                        <p>We're beyond excited for what's coming and to have all of you with us as we build something extraordinary. An AMA with Luca and the team is on the horizon, and so much more.</p>
+                                        <p class="final-note">So sit back, roll up, and get ready for takeoff...! 🔥🥦:cool~2:</p>
+                                    </div>
+
+                                    <div class="social-link">
+                                        <p>Link: <a href="https://twitter.com/CannaSapiensNFT/status/1843343038376026346" target="_blank">https://twitter.com/CannaSapiensNFT/status/1843343038376026346</a></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `,
+                    tags: ["🤝", "🚀"]
+                },
+                {
+                    id: 16,
+                    title: "The Rise of Canna Sapiens",
+                    image: "images/16.png",
+                    date: "DEC 21, 2024",
+                    description: `
+                        <div class="modal-content-inner">
+                            <div class="modal-text">
+                                <div class="rise-announcement">
+                                    <div class="announcement-header">
+                                        <h3>The Rise of Canna Sapiens :gains:</h3>
+                                    </div>
+
+                                    <div class="intro-message">
+                                        <p>The past few months have been nothing short of extraordinary. Watching this community grow, thrive, and come together has been one of the most rewarding experiences of our journey. You've shown us what's possible when creativity, connection, and shared passion collide, and we're beyond grateful to be part of it.</p>
+                                    </div>
+
+                                    <div class="stats-section">
+                                        <h4>The stats:</h4>
+                                        <div class="stats-grid">
+                                            <div class="stat-item discord">
+                                                <h5>Discord</h5>
+                                                <div class="stat-numbers">
+                                                    <p class="growth">257% increase</p>
+                                                    <p class="detail">Exploded from 7K to over 25K members in just 10 days</p>
+                                                </div>
+                                            </div>
+
+                                            <div class="stat-item twitter">
+                                                <h5>X</h5>
+                                                <div class="stat-numbers">
+                                                    <p class="growth">125% surge</p>
+                                                    <p class="detail">Following has more than doubled from 16K to 36K in the same period</p>
+                                                </div>
+                                            </div>
+
+                                            <div class="stat-item content">
+                                                <h5>Community Content</h5>
+                                                <div class="stat-numbers">
+                                                    <p class="growth">300+ pieces daily</p>
+                                                    <p class="detail">One every 5 minutes. A relentless wave of creativity.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="journey-message">
+                                        <p>For over a year, we've poured our hearts into building Canna Sapiens, and those who've been with us since the beginning know exactly how far we've come.</p>
+                                        <p class="highlight">The world is now more than seeing the potential that we've always believed in.</p>
+                                    </div>
+
+                                    <div class="mint-announcement">
+                                        <p class="mint-date">The moment we've all been waiting for - THE MINT - is coming in January 2025.</p>
+                                    </div>
+
+                                    <div class="closing-message">
+                                        <p>Until then, we keep this momentum going! We keep creating! We keep building! There is no stopping us now, we are inevitable.</p>
+                                        <p class="gratitude">To every single one of you who's joined us, supported us, and believed in the vision: thank you for being the heart of Canna Sapiens.</p>
+                                        <p class="final-note">Stay bullish Hempinos! 🔥</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `,
+                    tags: ["📈", "🚀"]
+                },
+                {
+                    id: 17,
+                    title: "Christmas Greetings",
+                    image: "images/17.png",
+                    date: "DEC 25, 2024",
+                    description: `
+                        <div class="modal-content-inner">
+                            <div class="modal-text">
+                                <div class="christmas-message">
+                                    <div class="greeting-header">
+                                        <h3>Merry Christmas, Hempinos! 💚</h3>
+                                    </div>
+
+                                    <div class="message-body">
+                                        <p>This holiday season, we're feeling grateful for all of you who make this community what it is. Take a moment to get cozy, enjoy the little things, and tell your loved ones how much they mean to you. May your day be filled with warmth, laughter, and the chillest vibes.</p>
+                                    </div>
+
+                                    <div class="social-link">
+                                        <a href="https://twitter.com/CannaSapiensNFT/status/1871970270845820961" target="_blank">https://twitter.com/CannaSapiensNFT/status/1871970270845820961</a>
+                                    </div>
+
+                                    <div class="signature">
+                                        <p>Sincerely,</p>
+                                        <p class="team">The Canna Team :pepe_heart:</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `,
+                    tags: ["🎄", "💚"]
+                }
+            ];
+
+            // Create and add projects
+            function createProjects() {
+                projectsData.forEach((project, index) => {
+                    // Başlığı böl ve harflere ayır
+                    let title = project.title;
+                    if (title.includes('x')) {
+                        title = title.split('x').map(part => {
+                            const words = part.trim().split(' ');
+                            return `<div>${words.map((word, wordIndex) => {
+                                const chars = word.split('');
+                                return chars.map((char, i) => 
+                                    `<span style="--char-index: ${i + (wordIndex * 10)}">${char}</span>`
+                                ).join('') + (wordIndex < words.length - 1 ? '<span style="--char-index: ${(wordIndex + 1) * 10 - 1}">&nbsp;</span>' : '');
+                            }).join('')}</div>`;
+                        }).join('');
+                    } else {
+                        const words = title.split(' ');
+                        title = `<div>${words.map((word, wordIndex) => {
+                            const chars = word.split('');
+                            return chars.map((char, i) => 
+                                `<span style="--char-index: ${i + (wordIndex * 10)}">${char}</span>`
+                            ).join('') + (wordIndex < words.length - 1 ? '<span style="--char-index: ${(wordIndex + 1) * 10 - 1}">&nbsp;</span>' : '');
+                        }).join('')}</div>`;
+                    }
+
+                    const projectElement = document.createElement('a');
+                    projectElement.href = "#";
+                    projectElement.className = "project";
+                    projectElement.dataset.index = index + 1;
+                    projectElement.innerHTML = `
+                        <div class="project-card">
+                            <div class="project-header">
+                                <div class="project-number">${index + 1}</div>
+                                ${project.date ? `<div class="project-date">${project.date}</div>` : ''}
+                            </div>
+                            <img src="${project.image}" alt="${project.title}">
+                        </div>
+                        <div class="project-title">${title}</div>
+                    `;
+
+                    // Add click event
+                    projectElement.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        if (!isDragging) {
+                            openModal(project);
+                        }
+                    });
+
+                    wrapper.appendChild(projectElement);
+                });
+            }
+
+            // Modal functions
+            const colors = [
+                'rgba(123, 198, 255, 0.3)', // mavi
+                'rgba(255, 156, 123, 0.3)', // turuncu
+                'rgba(156, 255, 123, 0.3)', // yeşil
+                'rgba(255, 123, 233, 0.3)', // pembe
+                'rgba(123, 255, 233, 0.3)', // turkuaz
+                'rgba(255, 233, 123, 0.3)', // sarı
+                'rgba(233, 123, 255, 0.3)', // mor
+                'rgba(123, 233, 255, 0.3)', // açık mavi
+                'rgba(255, 123, 156, 0.3)', // kırmızı
+                'rgba(156, 123, 255, 0.3)'  // lavanta
+            ];
+
+            // Tarihleri daha güzel formatta göster
+            function formatDate(dateStr) {
+                const [month, day, year] = dateStr.split(' ');
+                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                return `${months[parseInt(month)-1]} ${day}, ${year}`;
+            }
+
+            function openModal(project) {
+                const modal = document.getElementById('projectModal');
+                document.getElementById('modalImage').src = project.image;
+                
+                // İkinci resmi ekle (sadece 5. proje için)
+                const secondaryImage = document.getElementById('secondaryImage');
+                if (project.id === 5) {
+                    secondaryImage.style.display = 'block';
+                    secondaryImage.innerHTML = '<img src="images/555.png" alt="Secondary Image">';
+                } else {
+                    secondaryImage.style.display = 'none';
+                }
+                
+                // Açıklama metnini formatlı göster
+                const description = document.getElementById('modalDescription');
+                if (project.description) {
+                    description.innerHTML = project.description;
+                } else {
+                    description.textContent = '';
+                }
+                
+                const tagsContainer = document.getElementById('modalTags');
+                tagsContainer.innerHTML = project.tags.map(tag => 
+                    `<span class="tag">${tag}</span>`
+                ).join('');
+
+                if (project.date) {
+                    document.getElementById('modalDate').textContent = project.date;
+                }
+                
+                // Her proje için farklı renk seç
+                const colorIndex = (project.id - 1) % colors.length;
+                const closeBtn = document.querySelector('.close-modal');
+                closeBtn.style.background = `linear-gradient(135deg, ${colors[colorIndex]}, ${colors[(colorIndex + 1) % colors.length]})`;
+                closeBtn.style.boxShadow = `0 4px 15px ${colors[colorIndex]}`;
+                
+                modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
+
+            closeBtn.onclick = function() {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+
+            window.onclick = function(e) {
+                if (e.target == modal) {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+            }
+
+            // Close modal with ESC key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && modal.style.display === 'flex') {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+            });
+
+            function setupInfiniteLoop() {
+                const projects = Array.from(wrapper.children);
+                const projectWidth = projects[0].offsetWidth;
+                const gap = parseInt(getComputedStyle(wrapper).gap);
+                const singleWidth = (projectWidth + gap);
+                const totalWidth = singleWidth * (projects.length - 6);
+                const threshold = singleWidth * 2;
+
+                // Kart klonlarını oluştur
+                const firstThree = projects.slice(0, 3).map(p => p.cloneNode(true));
+                const lastThree = projects.slice(-3).map(p => p.cloneNode(true));
+
+                // Klonları ekle
+                lastThree.forEach(clone => wrapper.insertBefore(clone, wrapper.firstChild));
+                firstThree.forEach(clone => wrapper.appendChild(clone));
+
+                // Başlangıç pozisyonunu ayarla
+                container.scrollLeft = (projectWidth + gap) * 3;
+
+                // Otomatik scroll için değişkenler
+                let autoScrollSpeed = 1; // Scroll hızı
+                let lastAutoScroll = 0;
+                let isAutoScrolling = true;
+
+                // Otomatik scroll fonksiyonu
+                function autoScroll() {
+                    if (!isAutoScrolling) return;
+                    
+                    const now = Date.now();
+                    if (now - lastAutoScroll > 16) { // 60fps
+                        container.scrollLeft += autoScrollSpeed;
+                        checkBounds();
+                        lastAutoScroll = now;
+                    }
+                    
+                    requestAnimationFrame(autoScroll);
+                }
+
+                // Mouse olayları için event listener'lar
+                container.addEventListener('mouseenter', () => {
+                    isAutoScrolling = false;
+                });
+
+                container.addEventListener('mouseleave', () => {
+                    isAutoScrolling = true;
+                    autoScroll();
+                });
+
+                // Başlangıçta otomatik scroll'u başlat
+                autoScroll();
+            }
+
+            let lastDragCheck = 0;
+            let dragDistance = 0;
+            
+            function checkBounds() {
+                const projects = Array.from(wrapper.children);
+                const projectWidth = projects[0].offsetWidth;
+                const gap = parseInt(getComputedStyle(wrapper).gap);
+                const singleWidth = (projectWidth + gap);
+                const totalWidth = singleWidth * (projects.length - 6);
+                const threshold = singleWidth * 2;
+
+                // Geçiş kontrolü
+                if (container.scrollLeft >= totalWidth + threshold) {
+                    container.style.scrollBehavior = 'auto';
+                    container.style.pointerEvents = 'none';
+                    requestAnimationFrame(() => {
+                        container.scrollLeft = threshold;
+                        requestAnimationFrame(() => {
+                            container.style.pointerEvents = 'auto';
+                        });
+                    });
+                } else if (container.scrollLeft <= threshold) {
+                    container.style.scrollBehavior = 'auto';
+                    container.style.pointerEvents = 'none';
+                    requestAnimationFrame(() => {
+                        container.scrollLeft = totalWidth + threshold;
+                        requestAnimationFrame(() => {
+                            container.style.pointerEvents = 'auto';
+                        });
+                    });
+                }
+            }
+
+            container.addEventListener('mousedown', (e) => {
+                isDown = true;
+                isDragging = false;
+                dragStartTime = Date.now();
+                dragDistance = 0;
+                container.style.cursor = 'grabbing';
+                startX = e.pageX - container.offsetLeft;
+                scrollLeft = container.scrollLeft;
+                e.preventDefault();
+            });
+
+            container.addEventListener('mouseleave', () => {
+                if (isDown && isDragging) {
+                    checkBounds();
+                }
+                isDown = false;
+                isDragging = false;
+                container.style.cursor = 'grab';
+            });
+
+            container.addEventListener('mouseup', () => {
+                if (isDown && isDragging) {
+                    checkBounds();
+                }
+                isDown = false;
+                isDragging = false;
+                container.style.cursor = 'grab';
+            });
+
+            container.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                
+                const now = Date.now();
+                if (now - lastDragCheck < 16) return;
+                lastDragCheck = now;
+
+                const x = e.pageX - container.offsetLeft;
+                const walk = (x - startX) * SENSITIVITY.DRAG;
+                dragDistance += Math.abs(walk);
+                
+                if (dragDistance > 5) {
+                    isDragging = true;
+                }
+                
+                container.scrollLeft = scrollLeft - walk;
+                
+                // Sürekli sınır kontrolü
+                const projects = Array.from(wrapper.children);
+                const projectWidth = projects[0].offsetWidth;
+                const gap = parseInt(getComputedStyle(wrapper).gap);
+                const singleWidth = (projectWidth + gap);
+                const totalWidth = singleWidth * (projects.length - 6);
+                const threshold = singleWidth * 2;
+
+                if (container.scrollLeft >= totalWidth + threshold || container.scrollLeft <= threshold) {
+                    checkBounds();
+                }
+            });
+
+            // Mouse tekerlek kontrolü
+            let lastWheel = Date.now();
+            container.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                
+                const now = Date.now();
+                if (now - lastWheel < 50) return;
+                lastWheel = now;
+
+                const delta = Math.sign(e.deltaY) * SENSITIVITY.WHEEL;
+                container.scrollLeft += delta;
+                checkBounds();
+            }, { passive: false });
+
+            // Initial setup
+            createProjects();
+            setupInfiniteLoop();
+        });
+    </script>
+</body>
+</html>
